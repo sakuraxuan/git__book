@@ -394,7 +394,34 @@
     
                                 <section class="normal markdown-section">
                                 
-                                
+                                <ol>
+<li><h4 id="order-by-&#x6309;&#x7167;&#x6307;&#x5B9A;&#x987A;&#x5E8F;">order by &#x6309;&#x7167;&#x6307;&#x5B9A;&#x987A;&#x5E8F;</h4>
+</li>
+</ol>
+<pre><code class="lang-sql">&#x65B9;&#x6CD5;&#x4E00;: <span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> <span class="hljs-keyword">user</span> <span class="hljs-keyword">order</span> <span class="hljs-keyword">by</span> <span class="hljs-keyword">field</span>(roleId,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>,<span class="hljs-number">4</span>,<span class="hljs-number">1</span>,<span class="hljs-number">5</span>);
+&#x65B9;&#x6CD5;&#x4E8C;: <span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> <span class="hljs-keyword">user</span> <span class="hljs-keyword">order</span> <span class="hljs-keyword">by</span> <span class="hljs-keyword">locate</span>(<span class="hljs-keyword">id</span>,<span class="hljs-string">&apos;2,3,1,5,4&apos;</span>);
+</code></pre>
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> * <span class="hljs-keyword">FROM</span> pet <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> <span class="hljs-keyword">if</span> (species=<span class="hljs-string">&apos;snake&apos;</span>,<span class="hljs-number">0</span>,<span class="hljs-number">1</span>)<span class="hljs-keyword">desc</span> ,species; <span class="hljs-comment">-- &#x628A;species&#x6392;&#x4E86;2&#x6B21;,&#x7B2C;&#x4E00;&#x6B21;&#x7279;&#x6B8A;&#x8981;&#x6C42;&#x6392;&#x5E8F;</span>
+<span class="hljs-keyword">SELECT</span> * <span class="hljs-keyword">FROM</span> pet <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> birth <span class="hljs-keyword">IN</span>(<span class="hljs-string">&apos;1993-02-04&apos;</span>,<span class="hljs-string">&apos;1989-05-13&apos;</span>),birth;
+if(isnull(&#x5B57;&#x6BB5;&#x540D;),0,1) desc <span class="hljs-comment">-- &#x5C06;&#x7A7A;&#x503C;&#x5F3A;&#x5236;&#x653E;&#x5728;&#x6700;&#x540E;&#x51E0;&#x884C;</span>
+</code></pre>
+<ol>
+<li><p>&#x5224;&#x65AD;&#x4E00;&#x4E2A;&#x5B57;&#x7B26;&#x4E32;&#x662F;&#x5426;&#x5305;&#x542B;&#x6307;&#x5B9A;&#x5B57;&#x7B26;</p>
+<p>&#x6570;&#x636E;&#x9700;&#x6C42;:    &#x5224;&#x65AD;&apos;&#x5468;&#x4E8C;&#x662F;&#x5426;&#x4F11;&#x606F;&apos;(&#x662F;&#x5426;&#x5305;&#x542B;&apos;-1,&apos;)</p>
+<pre><code class="lang-sql">48-1,49-1,50-1,51-1,52-1,53-1,54-1,55-1,56-1,57-1,58-1,59-1,60-1,61-1,62-1,63-1,48-3,49-3,50-3,51-3,52-3,53-3,54-3,55-3,56-3,57-3,58-3,59-3,60-3,61-3,62-...
+</code></pre>
+<p>&#x65B9;&#x6CD5;&#x4E00;:replace  &#x628A;&#x6307;&#x5B9A;&#x5B57;&#x7B26;&#x66FF;&#x6362;&#x4E3A;&#x7A7A;,&#x6BD4;&#x8F83;&#x957F;&#x5EA6;&#x662F;&#x5426;&#x53D1;&#x751F;&#x53D8;&#x5316;</p>
+<pre><code class="lang-sql">case when  (LENGTH(t.work_time) - LENGTH(<span class="hljs-keyword">REPLACE</span>(t.work_time,<span class="hljs-string">&apos;-1,&apos;</span>,<span class="hljs-string">&apos;&apos;</span> )))&gt;<span class="hljs-number">0</span> <span class="hljs-keyword">then</span>  <span class="hljs-string">&apos;&#x5426;&apos;</span> 
+         <span class="hljs-keyword">when</span> t.work_time <span class="hljs-keyword">is</span> <span class="hljs-literal">null</span> <span class="hljs-keyword">then</span> <span class="hljs-literal">null</span> <span class="hljs-keyword">else</span> <span class="hljs-string">&apos;&#x662F;&apos;</span> <span class="hljs-keyword">end</span>  <span class="hljs-string">&apos;&#x5468;&#x4E8C;&#x662F;&#x5426;&#x4F11;&#x606F;&apos;</span>,
+</code></pre>
+</li>
+</ol>
+<p>   &#x65B9;&#x6CD5;&#x4E8C;:locate &#x662F;&#x5426;&#x8FD4;&#x56DE;&#x7279;&#x6B8A;&#x5B57;&#x7B26;&#x6240;&#x5728;&#x4F4D;&#x7F6E;, &#x5982;&#x679C;&#x4E0D;&#x5305;&#x542B;&#x56DE;&#x8FD4;&#x56DE;0</p>
+<pre><code class="lang-sql">   case when locate(&apos;-1,&apos;,t.work_time) =0 then &apos;&#x5426;&apos;
+       when t.work_time is null then null else &apos;&#x662F;&apos; 
+       <span class="hljs-keyword">end</span> <span class="hljs-string">&apos;&#x5468;&#x4E8C;&#x662F;&#x5426;&#x4F11;&#x606F;&apos;</span>
+</code></pre>
+
                                 
                                 </section>
                             
@@ -437,7 +464,7 @@
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"第4节：高级函数","level":"1.3.4","depth":2,"next":{"title":"第5节: 思路心得","level":"1.3.5","depth":2,"path":"sql/思路心得.md","ref":"sql/思路心得.md","articles":[]},"previous":{"title":"第3节：基本语法","level":"1.3.3","depth":2,"path":"sql/基本语法.md","ref":"sql/基本语法.md","articles":[]},"dir":"neutral"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"sql/高级函数.md","mtime":"2019-08-27T10:01:34.592Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-08-28T05:50:44.959Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"第4节：高级函数","level":"1.3.4","depth":2,"next":{"title":"第5节: 思路心得","level":"1.3.5","depth":2,"path":"sql/思路心得.md","ref":"sql/思路心得.md","articles":[]},"previous":{"title":"第3节：基本语法","level":"1.3.3","depth":2,"path":"sql/基本语法.md","ref":"sql/基本语法.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"sql/高级函数.md","mtime":"2019-08-28T09:50:08.110Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-08-28T11:33:14.989Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
