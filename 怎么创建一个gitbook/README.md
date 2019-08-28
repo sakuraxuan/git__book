@@ -105,7 +105,7 @@ git push
 
 并推到gh-pages分支：
 
-```
+```python
 $ git subtree push --prefix=_book origin gh-pages
 ```
 
